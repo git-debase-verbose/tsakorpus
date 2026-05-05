@@ -15,7 +15,7 @@ from .search_context import SearchContext
 fields2cookies = {'locale', 'page_size', 'context_size', 'translit', 'hidden_tiers', 'enable_uri_links'}
 
 
-def initialize_session():
+def initialize_session(simple_search=False):
     """
     Generate a unique session ID and initialize a dictionary with
     parameters for the current session. Write it to the global
@@ -46,9 +46,11 @@ def initialize_session():
                                           'docx_gloss_font_size': settings.docx_gloss_font_size,
                                           'progress': 100,
                                           'search_context': SearchContext(curLocale=settings.default_locale)}
+    if simple_search:
+        sessionData[session['session_id']]['locale'] = settings.default_locale_simple
 
 
-def get_session_data(fieldName):
+def get_session_data(fieldName, simple_search=False):
     """
     Get the value of the fieldName parameter for the current session.
     If the session has not yet been initialized, initialize it first.
@@ -59,7 +61,7 @@ def get_session_data(fieldName):
     if ('session_id' not in session
             or session['session_id'] not in sessionData
             or 'search_context' not in sessionData[session['session_id']]):
-        initialize_session()
+        initialize_session(simple_search=simple_search)
 
     if fieldName == 'login' and fieldName not in sessionData[session['session_id']]:
         sessionData[session['session_id']]['login'] = False
@@ -170,8 +172,8 @@ def in_session(fieldName):
     return fieldName in sessionData[session['session_id']]
 
 
-def get_locale():
-    return get_session_data('locale')
+def get_locale(simple_search=False):
+    return get_session_data('locale', simple_search=simple_search)
 
 
 def cur_search_context():

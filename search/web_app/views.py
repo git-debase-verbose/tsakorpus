@@ -57,9 +57,20 @@ def landing():
                                corpus_size_total=round(settings.corpus_size_total))
 
 
+@app.route('/simple_search')
+def search_page_simple():
+    if settings.simple_search_enabled:
+        # Ask for locale so that it is initialized as settings.default_locale_simple
+        # if the session has not been initialized yet
+        locale = get_locale(simple_search=True)
+        return search_page(simple=True)
+    else:
+        return '<html><body><p>The feature is not available for this corpus.</p></body></html>'
+
+
 @app.route('/search')
 @app.route('/search_minimalistic')
-def search_page():
+def search_page(simple=False):
     """
     Return HTML of the search page (the main page of the corpus).
     """
@@ -67,7 +78,8 @@ def search_page():
     if request.query_string is not None:
         queryString = request.query_string.decode('utf-8')
     ready4work = settings.ready_for_work
-    sc.start_elastic_service()
+    if settings.try_restart_elastic:
+        sc.start_elastic_service()
     if settings.ready_for_work:
         ready4work = sc.is_alive()
         if (not ready4work
@@ -84,8 +96,9 @@ def search_page():
 
     return render_template('index.html',
                            minimalistic=bMinimalistic,
+                           simple=simple,
                            ready_for_work=ready4work,
-                           locale=get_locale(),
+                           locale=get_locale(simple_search=simple),
                            corpus_name=settings.corpus_name,
                            documentation_url=settings.documentation_url,
                            languages=settings.languages,

@@ -189,7 +189,9 @@ $(function() {
 		});
 	});
 	
-	load_additional_word_fields();
+	if (!simpleViewEnabled) {
+		load_additional_word_fields();
+	}
 	assign_input_events();
 	assign_show_hide();
 	search_if_query();

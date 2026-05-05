@@ -8,6 +8,7 @@
 	<link rel="manifest" href="static/favicons/site.webmanifest">
 	<link rel="stylesheet" type="text/css" href="static/bootstrap-5.0.0-beta1-dist/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="static/css/search.css">
+	<link rel="stylesheet" type="text/css" href="static/css/search_simple.css">
 	<link rel="stylesheet" type="text/css" href="static/css/span_styles.css">
 	<link rel="stylesheet" type="text/css" href="static/css/gramm_gloss_selection.css">
 	<link rel="stylesheet" type="text/css" href="static/datatables-2.2.1/datatables.min.css">
@@ -44,6 +45,7 @@
 	var keyboardsByTier = {{ keyboards_by_tier|safe }};
 	var intMetaFields = {{ int_meta_fields|safe }};
 	var shareQueryPrependCorpusURL = {{ share_query_url|safe }};
+	var simpleViewEnabled = {{ simple|lower|safe }};
 	</script>
 	<!-- <link href="https://fonts.googleapis.com/css?family=Lato:400,400i" rel="stylesheet"> -->
 	{% if media %}
@@ -75,7 +77,12 @@
 		</div>
 {% if ready_for_work %}
 		<div class="row_section_fixed">
-			{% include "index/query_area.html" %} <!-- query area: boxes for word search, settings, search buttons -->
+			<!-- query area: boxes for word search, settings, search buttons -->
+			{% if not simple %}
+				{% include "index/query_area.html" %}
+			{% else %}
+				{% include "index/query_area_simple.html" %}
+			{% endif %}
 		</div>
 		<div class="row_section_fixed">
 			{% include "index/progress.html" %} <!-- progress bar and mokey GIF -->

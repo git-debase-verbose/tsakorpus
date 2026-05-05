@@ -73,6 +73,8 @@ class CorpusSettings:
         # Interface options and tools
         self.interface_languages = ['en', 'ru']
         self.default_locale = 'en'
+        self.simple_search_enabled = True
+        self.default_locale_simple = 'ru'
         self.localized_meta_values = []
         self.transliterations = None
         self.input_methods = None

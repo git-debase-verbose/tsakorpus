@@ -1,0 +1,28 @@
+<div id="search_div_simple" class="transitions init-hidden centered">
+	<div class="show-hide">
+	<div class="query_slide">
+		<form id="search_main">
+			<input type="hidden" name="n_words" id="n_words" value="-1">
+			<input type="hidden" name="random_seed" id="random_seed" value={{ random_seed }}>
+			<div class="all_in_one_search_row">
+		    	{% if keyboards_by_tier != '{}' %}
+					<a id="enable_virtual_keyboard" class="bi bi-keyboard-fill link_icon" data-tooltip="tooltip" data-placement="bottom" title="{{ _('Virtual keyboard') }}"></a>
+				{% endif %}
+		    	<div class="all_in_one_search_box_shell">
+		    		<input type="text" class="search_input virtual-keyboard" data-kioskboard-type="keyboard" data-kioskboard-specialcharacters="true" name="all_in_one_search_txt" id="all_in_one_search_txt" placeholder="Search the corpus...">
+		    		<button type="button" id="search_sent" class="btn btn-primary bi bi-rocket-takeoff" aria-label="{{ _('Let\'s go') }}" value="{{ _('Let\'s go') }}" title="{{ _('Let\'s go') }}" data-tooltip="tooltip" data-placement="bottom"></button>
+		    	</div>
+		  	</div>
+		</form>
+	</div>
+
+{% if show_info_alert_simple %}
+<div class="alert alert-info alert-dismissible fade show" role="alert" id="info_alert">
+	{% include "index/info_alert_" + locale + "_simple.html" ignore missing %}
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{{ _('Close') }}"></button>
+</div>
+{% endif %}
+
+
+</div>
+</div>

@@ -19,7 +19,7 @@ function hide_tooltips() {
 }
 
 function clear_saved_words_table() {
-	if ($('#w_id1').val().length <= 0 && $('#l_id1').val().length <= 0) {
+	if (!simpleViewEnabled && $('#w_id1').val().length <= 0 && $('#l_id1').val().length <= 0) {
 		$('#saved_words_table').empty();
 		$('#saved_words_table').toggle(false);
 	}

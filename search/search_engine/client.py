@@ -140,6 +140,64 @@ class SearchClient:
                                   body=esQuery)
         return hits
 
+    def word_exists(self, word, fieldName, lang=''):
+        """
+        Check if a word or a lemma exists in the database.
+        """
+        if fieldName not in ('wf', 'lex'):
+            return False
+        if fieldName == 'wf' and self.settings.wf_lowercase:
+            word = word.lower()
+        wtype = 'word'
+        if fieldName == 'lex':
+            wtype = 'lemma'
+        if len(lang) > 0:
+            langID = self.settings.languages.index(lang)
+        else:
+            langID = 0
+        esQuery = {
+            'query': {
+                'bool': {
+                    'must': [
+                        {
+                            'bool': {
+                                'must': [
+                                    {
+                                        'match': {
+                                            'wtype': wtype
+                                        }
+                                    },
+                                    {
+                                        'wildcard': {
+                                            'wf': word
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            'term': {
+                                'lang': langID
+                            }
+                        }
+                    ]
+                }
+            },
+            '_source': ['wf', 'freq'],
+            'size': 0,
+            'sort': {
+                'freq': {
+                    'order': 'desc'
+                }
+            }
+        }
+        hits = self.get_words(esQuery)
+        if ('hits' not in hits or 'hits' not in hits['hits']
+                or 'total' not in hits['hits'] or 'value' not in hits['hits']['total']
+                or hits['hits']['total']['value'] <= 0):
+            return False
+        return True
+
     @log_if_needed
     def get_docs(self, esQuery):
         hits = self.es.search(index=self.name + '.docs',

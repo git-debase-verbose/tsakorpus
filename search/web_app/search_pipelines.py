@@ -16,6 +16,7 @@ from . import sc, sentView, settings, MIN_TOTAL_FREQ_WORD_QUERY, MIN_HITS_PARTIT
 from .session_management import set_session_data, get_session_data, get_locale, change_display_options, cur_search_context
 from .auxiliary_functions import jsonp, gzipped, nocache, lang_sorting_key, copy_request_args,\
     wilson_confidence_interval, distance_constraints_too_complex, log_query
+from .simple_query import process_simple_query
 
 
 def find_parallel_for_one_sent(sSource):
@@ -586,7 +587,16 @@ def find_sentences_json(page=0):
         query = copy_request_args()
         log_query('sentence', query)
         page = 1
-        change_display_options(query)
+        if (('n_words' in query and query['n_words'] == '-1')
+                or ('all_in_one_search_txt' in query and len(query['all_in_one_search_txt']) > 0)):
+            # This is an all-in-one query from the simplified interface.
+            # Check if this is allowed and transform the query using a function
+            # that has to be programmed separately for each specific corpus.
+            if settings.simple_search_enabled:
+                query = process_simple_query(query, sc)
+                log_query('simple_query_processed', query)
+        else:
+            change_display_options(query)
         sortOrder = get_session_data('sort')
         if (sortOrder not in ('random', 'freq', 'year', 'sent_id')
                 or sortOrder == 'year' and not settings.year_sort_enabled
