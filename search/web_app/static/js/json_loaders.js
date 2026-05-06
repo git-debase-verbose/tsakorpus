@@ -282,12 +282,18 @@ function load_additional_word_fields() {
 }
 
 function hide_query_panel() {
-    $("#hide_query_button").show();
-    $("#greeting").hide();
-	if ($("#hide_query_icon").hasClass('bi-arrow-bar-up')) {
-		$("#hide_query_button").click();
+	$("#greeting").hide();
+	$("#info_alert").hide();
+	if (!simpleViewEnabled) {
+		$("#hide_query_button").show();
+		if ($("#hide_query_icon").hasClass('bi-arrow-bar-up')) {
+			$("#hide_query_button").click();
+		}
+		$('#search_div').removeClass('centered');
 	}
-	$('#search_div').removeClass('centered');
+	else {
+		$('#search_div_simple').removeClass('simple_centered');
+	}
 }
 
 function show_query_panel() {

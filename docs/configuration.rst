@@ -15,7 +15,7 @@ Configuring your corpus
 
 Since Tsakorpus is developed for many usage scenarios in mind, many things in it are customizable. As a consequence, there are a lot of parameters that you have to configure. They define how Tsakorpus looks and behaves.
 
-One way of configuring the parameters is manually editing ``/conf/corpus.json``. You will find a full alphabetical list of parameters below. Some parameter changes will only take effect after you reindex your corpus, but most (especially those connected to the interface) will only require apache2/nginx reload. Before you reload the server, make sure you have valid JSON in ``/conf/corpus.json``, e.g. using JSONLint_.
+One way of configuring the parameters is manually editing ``/conf/corpus.json``. You will find a full alphabetical list of parameters below. Some parameter changes will only take effect after you reindex your corpus, but most (especially those connected to the interface) will only require apache2/nginx reload. Before you reload the server, make sure you have valid JSON in ``/conf/corpus.json``, e.g., using JSONLint_.
 
 .. _JSONLint: https://jsonlint.com/
 
@@ -56,7 +56,9 @@ List of parameters
 
 - ``default_context_size`` (integer) -- how many adjacent sentecnes are displayed together with each search hit by default. Defaults to ``0``.
 
-- ``default_locale`` (string) -- code of the default :doc:`interface language </interface_languages>`.
+- ``default_locale`` (string) -- code of the default :doc:`interface language </interface_languages>` for the regular (default) search page.
+
+- ``default_locale_simple`` (string) -- code of the default :doc:`interface language </interface_languages>` for the simplified search page, if it is enabled (see ``simple_search_enabled``).
 
 - ``default_values`` (dictionary) -- dictionary where keys are names of text boxes in the word search panel and values are the strings that should appear there by default. Currently, it only works for simple string-valued sentence-level metadata fields. The text boxes should be called by the IDs they have in the HTML, e.g. ``sent_meta_speaker`` rather than ``speaker`` if ``speaker`` is a sentence-levele metadata field.
 
@@ -305,6 +307,8 @@ List of parameters
 - ``sentence_meta`` (list of strings) -- list with names of the sentence-level metadata fields that should be available in word-level search queries.
 
 - ``session_cookie_domain`` (string) -- value of the Flask's ``SESSION_COOKIE_DOMAIN`` parameter, if different from the base domain name of your resource. You may want to set it if you have multiple corpora on different subdomains.
+
+- ``simple_search_enabled`` (Boolean) -- whether a simplified search page (aimed primarily at the language community) is enabled. If set to ``true``, then a minimalistic page with just one textbox for everything will be available at ``/simple_search``. However, you have to program its behavior, i.e., how the text entered there is translated into an actual query. This is done by editing the ``process_simple_query()`` function in ``search/simple_query.py``. For example, you can automatically search in a particular subcorpus, turn on larger contexts, switch on a non-default transliteration method, etc.
 
 - ``share_query_url`` (Boolean) -- whether the query in the "Share query" modal should start with the URL of the current corpus, followed by ``?``. This way, it works like a full URL where the query is encoded in the GET parameters. Defaults to ``false``.
 
