@@ -1,11 +1,14 @@
-﻿<p>{{ _('Filter result:') }}
+﻿<p>{% if not simple %}{{ _('Filter result:') }}
 <span id="subcorpus_ndocs">{{ data.n_docs }}</span> {{ ngettext('document with', 'documents with', data.n_docs) }} 
 <span id="subcorpus_nwords">{{ data.n_words }}</span> {{ ngettext('word found,', 'words found,', data.n_words) }}
-<span id="subcorpus_size_percent">{{ data.size_percent }}%</span> {{ _('of the entire corpus.') }}</p>
+<span id="subcorpus_size_percent">{{ data.size_percent }}%</span> {{ _('of the entire corpus.') }}
+{% else %}
+{{ _('Text list') }}
+{% endif %}</p>
 <div class="documents_list">
 	<table class="documents_list_table">
 		<thead>
-			<th>&nbsp;</th>
+			{% if not simple %}<th>&nbsp;</th>{% endif %}
 			{% if fulltext_view_enabled %}<th>&nbsp;</th>{% endif %}
 			{% for f in data.metafields %}
 				{% if f not in sentence_meta %}
@@ -16,7 +19,7 @@
 		<tbody>
 			{% for doc in data.docs %}
 				<tr id="doc{{ doc.id }}" {% if doc.excluded %} class="context_off" {% endif %}>
-				<td><input type="checkbox" class="doc_toggle_chk" {% if not doc.excluded %}checked{% endif %}></td>
+				{% if not simple %}<td><input type="checkbox" class="doc_toggle_chk" {% if not doc.excluded %}checked{% endif %}></td>{% endif %}
 				{% if fulltext_view_enabled %}<td>{% if doc.fulltext_id|length > 0 %}<a class="bi bi-book fulltext_link_subcorpus" href="docs/{{ doc.fulltext_id }}" target="_blank" title="{{ _('Full text (opens in a new tab)') }}"> </a>{% endif %}</td>{% endif %}
 				{% for field in doc.fields %}
 					<td>{{ field|safe }}</td>

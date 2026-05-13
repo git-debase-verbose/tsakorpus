@@ -9,9 +9,10 @@
 					<a id="enable_virtual_keyboard" class="bi bi-keyboard-fill link_icon" data-tooltip="tooltip" data-placement="bottom" title="{{ _('Virtual keyboard') }}"></a>
 				{% endif %}
 		    	<div class="all_in_one_search_box_shell">
-		    		<input type="text" class="search_input virtual-keyboard" data-kioskboard-type="keyboard" data-kioskboard-specialcharacters="true" name="all_in_one_search_txt" id="all_in_one_search_txt" placeholder="Search the corpus...">
+		    		<input type="text" class="search_input virtual-keyboard" data-kioskboard-type="keyboard" data-kioskboard-specialcharacters="true" name="all_in_one_search_txt" id="all_in_one_search_txt" placeholder="Search the corpus..." data-hints="{{ search_hints }}">
 		    		<button type="button" id="search_sent" class="btn btn-primary bi bi-rocket-takeoff" aria-label="{{ _('Let\'s go') }}" value="{{ _('Let\'s go') }}" title="{{ _('Let\'s go') }}" data-tooltip="tooltip" data-placement="bottom"></button>
 		    	</div>
+		    	<a id="show_text_list" class="bi bi-book link_icon" data-tooltip="tooltip" data-placement="bottom" title="{{ _('Show list of texts') }}"></a>
 		  	</div>
 		</form>
 	</div>
@@ -26,3 +27,4 @@
 
 </div>
 </div>
+<script type='text/javascript' src='static/js/simple_search.js'></script>

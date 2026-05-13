@@ -75,6 +75,9 @@ class CorpusSettings:
         self.default_locale = 'en'
         self.simple_search_enabled = True
         self.default_locale_simple = 'ru'
+        self.simple_search_hints = []
+        self.simple_subcorpus_query = {}
+        self.simple_meta_fields = ['title']
         self.localized_meta_values = []
         self.transliterations = None
         self.input_methods = None
@@ -186,14 +189,16 @@ class CorpusSettings:
             'search_meta.stat_options',
             'docx_translation_tiers',
             'docx_additional_tiers',
-            'docx_font_faces'
+            'docx_font_faces',
+            'simple_search_hints'
         }
 
         # dictionaries where values are strings
         self.dict_sFields = {
             'auto_switch_tiers',
             'default_values',
-            'keyboards'
+            'keyboards',
+            'simple_subcorpus_query'
         }
 
         # dictionaries where values are lists of strings,

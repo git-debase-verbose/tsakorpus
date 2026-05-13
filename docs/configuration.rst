@@ -124,7 +124,7 @@ List of parameters
 
 - ``keep_lemma_order`` (Boolean) -- whether the order of multiple analyses should be kept when a string with the lemmata is concatenated for displaying. Defaults to ``false``. For example, if a word has 3 analyses with the lemmara *B*, *A* and *B*, ``false`` means that the output string of lemmata will look like *A/B*, and ``true``, *B/A/B*. The latter may be needed if multiple analyses actually refer to different parts of a graphic word, e.g. host and clitics if they are represented as a single token.
 
-- ``keyboards`` (dictionary) -- defines virtual keyboards for all or some of the languages of the corpus. Keys are language names, and values are IDs of the keyboard files in ``/search/web_app/static/keyboards``. See :doc:`keyboards` for details. If a virtual keyboard exists for a language, it can be switched on in *Word*, *Lemma* and *Full-text search* text boxes by clicking on a keyboard sign.
+- ``keyboards`` (dictionary) -- defines virtual keyboards for all or some of the languages of the corpus. Keys are language names, and values are IDs of the keyboard files in ``/search/web_app/static/keyboards``. See :doc:`keyboards` for details. If a virtual keyboard exists for a language, it can be switched on in *Word*, *Lemma* and *Full-text search* text boxes by clicking on a keyboard sign. You can also add a keyboard with a ``default`` key; it will be used in simple view if it is enabled.
 
 - ``kw_word_fields`` (list of strings) -- list with names of the word-level analysis fields that should be treated as keywords rather than text, except ``lex``, ``parts``, ``gloss`` and the grammatical fields that start with ``gr.``. Full-text search in these fields will be impossible. Defaults to empty list.
 
@@ -308,7 +308,13 @@ List of parameters
 
 - ``session_cookie_domain`` (string) -- value of the Flask's ``SESSION_COOKIE_DOMAIN`` parameter, if different from the base domain name of your resource. You may want to set it if you have multiple corpora on different subdomains.
 
+- ``simple_meta_fields`` (list of strings) -- documenty-level metadata fields that have to be displayed in the text list in simple view. Defaults to ``["title"]``.
+
 - ``simple_search_enabled`` (Boolean) -- whether a simplified search page (aimed primarily at the language community) is enabled. If set to ``true``, then a minimalistic page with just one textbox for everything will be available at ``/simple_search``. However, you have to program its behavior, i.e., how the text entered there is translated into an actual query. This is done by editing the ``process_simple_query()`` function in ``search/simple_query.py``. For example, you can automatically search in a particular subcorpus, turn on larger contexts, switch on a non-default transliteration method, etc.
+
+- ``simple_search_hints`` (list of strings) -- hints that are displayed as placeholders in the all-in-one search box in simple view.
+
+- ``simple_subcorpus_query`` (dictionary) -- keys and values of document-level metadata that select a subcorpus from which the documents are displayed in the text list in simple view.
 
 - ``share_query_url`` (Boolean) -- whether the query in the "Share query" modal should start with the URL of the current corpus, followed by ``?``. This way, it works like a full URL where the query is encoded in the GET parameters. Defaults to ``false``.
 

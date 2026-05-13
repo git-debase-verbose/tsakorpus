@@ -73,8 +73,10 @@
   },
   "keyboards": {
     "beserman": "beserman",
-    "russian": "russian"
+    "russian": "russian",
+    "default": "english"
   },
+  "simple_search_hints": ["word", "another word", "[lemma1] [lemma2]"],
   "generate_dictionary": true,
   "fulltext_view_enabled": true,
   "use_nonpersistent_fulltext_id": true,

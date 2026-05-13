@@ -94,9 +94,15 @@ def search_page(simple=False):
 
     process_request_cookies()
 
+    searchHints = ''
+    if simple:
+        searchHints = ';'.join(hint.strip().replace(';', ',')
+                               for hint in settings.simple_search_hints)
+
     return render_template('index.html',
                            minimalistic=bMinimalistic,
                            simple=simple,
+                           search_hints=searchHints,
                            ready_for_work=ready4work,
                            locale=get_locale(simple_search=simple),
                            corpus_name=settings.corpus_name,
@@ -540,13 +546,22 @@ def invert_subcorpus():
     set_session_data('invert_subcorpus', not bInverted)
     return search_doc()
 
+@app.route('/search_doc_simple')
+def search_doc_simple():
+    if settings.simple_search_enabled:
+        return search_doc(simple=True)
+    else:
+        return '<html><body><p>The feature is not available for this corpus.</p></body></html>'
 
 @app.route('/search_doc')
 @jsonp
-def search_doc():
-    query = copy_request_args()
+def search_doc(simple=False):
+    if simple:
+        query = settings.simple_subcorpus_query
+    else:
+        query = copy_request_args()
+        change_display_options(query)
     log_query('doc', query)
-    change_display_options(query)
     esQuery = sc.qp.subcorpus_query(query,
                                     query_size=settings.max_docs_retrieve,
                                     primaryLanguages=settings.primary_languages,
@@ -567,10 +582,12 @@ def search_doc():
                                                exclude=get_session_data('excluded_doc_ids'),
                                                inverted=get_session_data('invert_subcorpus'),
                                                corpusSize=settings.corpus_size,
-                                               primaryLanguages=settings.primary_languages)
+                                               primaryLanguages=settings.primary_languages,
+                                               simple=simple)
     hitsProcessed['media'] = settings.media
     hitsProcessed['images'] = settings.images
     return render_template('search_results/result_docs.html',
+                           simple=simple,
                            data=hitsProcessed,
                            fulltext_view_enabled=settings.fulltext_view_enabled,
                            sentence_meta=settings.sentence_meta)

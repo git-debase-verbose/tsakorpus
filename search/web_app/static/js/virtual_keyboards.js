@@ -70,6 +70,15 @@ function add_keyboard(kbLang, wordNum, inputMethod) {
 	});
 }
 
+function add_default_keyboard(kbLang) {
+	let keysJsonUrl = 'static/keyboards/keyboard-' + kbLang + '.json';
+	url_exists(keysJsonUrl, function(exists) {
+  	if (exists) {
+			initialize_keyboard(keysJsonUrl, '.virtual-keyboard');
+		}
+	});
+}
+
 function disable_keyboards() {
 	// Replace elements with their copies to clear KioskBoard
 	// event handlers.
@@ -90,15 +99,22 @@ function initialize_keyboards() {
 	}
 	// Assign new keyboards
 	let inputMethod = $('#input_method option:selected').val();
-	if (inputMethod === undefined) {
+	if (!inputMethod) {
 		inputMethod = '';
 	}
 	$('.tier_select').each(function (index) {
 		let wordNum = $(this).attr('id').replace(/^.*[^0-9]/g, '');
 		let curTier = $('#lang' + wordNum.toString() + ' option:selected').val();
+		if (!curTier) {
+			curTier = "default";
+		}
 		if (curTier in keyboardsByTier) {
 			let kbLang = keyboardsByTier[curTier];
 			add_keyboard(kbLang, wordNum, inputMethod);
 		}
 	});
+	if (simpleViewEnabled && ("default" in keyboardsByTier)) {
+		let kbLang = keyboardsByTier["default"];
+		add_default_keyboard(kbLang);
+	}
 }

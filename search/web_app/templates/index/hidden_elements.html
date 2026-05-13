@@ -203,3 +203,19 @@
 	</div>
 </div>
 {% endif %}
+
+{% if simple %}
+<div class="modal fade" id="simple_text_list" tabindex="-1" role="dialog" aria-labelledby="simple_text_list_header" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="simple_text_list_header">{{ _('All texts') }}</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ _('Close') }}"></button>
+			</div>
+			<div class="modal-body" id="simple_text_list_body">
+			<div id="simple_text_list_table">{{ _('(please wait for the document list to load)') }}</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endif %}

@@ -93,3 +93,8 @@
 	font-size: 1rem;
 	border-radius: 999px 0 0 999px;
 }
+
+#KioskBoard-VirtualKeyboard {
+	top: 64vh!important;
+	overflow: scroll;
+}

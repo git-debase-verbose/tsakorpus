@@ -1509,7 +1509,7 @@ class SentenceViewer:
                     w['_source']['rank'] = '&gt; ' + str(min(math.ceil(q * 100) for q in quantiles
                                                              if w['_source']['freq'] >= quantiles[q])) + '%'
 
-    def process_doc(self, d, exclude=None, inverted=False):
+    def process_doc(self, d, exclude=None, inverted=False, simple=False):
         """
         Process one document taken from response['hits']['hits'].
         """
@@ -1531,7 +1531,12 @@ class SentenceViewer:
             if 'year_to' in dSource and dSource['year_to'] != dSource['year_from']:
                 dateDisplayed += '&ndash;' + str(dSource['year_to'])
         doc['date_displayed'] = dateDisplayed
-        for field in self.sc.qp.docMetaFields:
+        if not simple:
+            fields = self.sc.qp.docMetaFields
+        else:
+            fields = [f for f in self.settings.simple_meta_fields
+                      if f in self.sc.qp.docMetaFields]
+        for field in fields:
             if field.endswith('_kw'):
                 continue
             if field in dSource:
@@ -1757,11 +1762,18 @@ class SentenceViewer:
                                                              translit=translit))
         return result
 
-    def process_docs_json(self, response, exclude=None, inverted=False, corpusSize=1, primaryLanguages=None):
+    def process_docs_json(self, response, exclude=None, inverted=False,
+                          corpusSize=1, primaryLanguages=None,
+                          simple=False):
         result = {'n_words': 0, 'n_sentences': 0, 'n_docs': 0,
                   'size_percent': 0.0,
-                  'message': 'Nothing found.',
-                  'metafields': [field for field in self.sc.qp.docMetaFields if not field.endswith('_kw')]}
+                  'message': 'Nothing found.'}
+        if not simple:
+            result['metafields'] = [field for field in self.sc.qp.docMetaFields if not field.endswith('_kw')]
+        else:
+            result['metafields'] = [field for field in self.settings.simple_meta_fields
+                                    if field in self.sc.qp.docMetaFields]
+
         if ('hits' not in response
                 or 'total' not in response['hits']
                 or response['hits']['total']['value'] <= 0):
@@ -1788,7 +1800,7 @@ class SentenceViewer:
                         result['n_words'] -= int(round(response['hits']['hits'][iHit]['_source']['n_words_' + lang], 0))
                 else:
                     result['n_words'] -= int(round(response['hits']['hits'][iHit]['_source']['n_words'], 0))
-            result['docs'].append(self.process_doc(response['hits']['hits'][iHit], exclude, inverted=inverted))
+            result['docs'].append(self.process_doc(response['hits']['hits'][iHit], exclude, inverted=inverted, simple=simple))
         result['size_percent'] = min(100, max(0, round(result['n_words'] * 100 / corpusSize, 3)))
         return result
 
