@@ -595,6 +595,7 @@ def find_sentences_json(page=0):
             if settings.simple_search_enabled:
                 query = process_simple_query(query, sc)
                 log_query('simple_query_processed', query)
+                change_display_options(query)
         else:
             change_display_options(query)
         sortOrder = get_session_data('sort')
