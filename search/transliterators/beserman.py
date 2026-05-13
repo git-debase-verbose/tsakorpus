@@ -29,17 +29,19 @@ cyrHard2Soft = {'а': 'я', 'э': 'е', 'е': 'е', 'ӥ': 'и', 'о': 'ё', 'у'
 rxSoften = re.compile('(?<![чӟ])ʼ([аэӥоу])', flags=re.I)
 rxCyrSoften = re.compile('([čǯ])(?!ʼ)', flags=re.I)
 rxCyrMultSoften = re.compile('ʼ{2,}')
-rxNeutral1 = re.compile('(?<=[бвгжкмпрфхцчшщйʼ])([эӥ])', re.I)
-rxNeutral2 = re.compile('([бвгжкмпрфхцчʼаоэӥуўяёеиюө]|\\b)(ӥ)', re.I)
+rxNeutral1 = re.compile('(?<=[бвгжӝкмпрфхцчӵшщйʼ])([эӥ])', re.I)
+rxNeutral2 = re.compile('([бвгжӝкмпрфхцчӵʼаоэӥуўяёеиюө]|\\b)(ӥ)', re.I)
 rxCyrNeutral = re.compile('(?<=[bvgzkmprfxcwj])ʼ', re.I)
 rxCJV = re.compile('(?<=[бвгджзӟклмнпрстўфхцчшщ])й([аяэеӥоёую])', re.I)
+rxCSoftJV = re.compile('(?<=[ӟчщ]ʼ)й([аяэеӥоёую])', re.I)
 rxSh = re.compile('ш(?=[ʼяёюиеЯЁЮИЕ])')
 rxZh = re.compile('ж(?=[ʼяёюиеЯЁЮИЕ])')
 rxShCapital = re.compile('Ш(?=[ʼяёюиеЯЁЮИЕ])')
 rxZhCapital = re.compile('Ж(?=[ʼяёюиеЯЁЮИЕ])')
-rxVJV = re.compile('(?<=[аеёиӥоӧөуыэюяʼ])й([аэоу])', flags=re.I)
-rxJV = re.compile('\\bй([аэоу])')
-rxJVCapital = re.compile('\\bЙ([аэоуАЭОУ])')
+rxVJV = re.compile('(?<=[аеёиӥоӧөуыэюя])й([аэоу])', flags=re.I)
+rxSoftJV = re.compile('(?<=[^ӟчщ]ʼ)й([аэоу])', flags=re.I)
+rxJV = re.compile('\\b(?<!ʼ)й([аэоу])')
+rxJVCapital = re.compile('\\b(?<!ʼ)Й([аэоуАЭОУ])')
 rxCyrVJV = re.compile('([aeiouɨəɤ])ʼ([aeouɨəɤ])')
 rxCyrVSoft = re.compile('([aeiouɨəɤ]|\\b)ʼ')
 rxCyrJV = re.compile('\\bʼ([aeouɨəɤ])')
@@ -48,6 +50,8 @@ rxCyrExtraSoft = re.compile('([džlnšt])\\1(?=ʼ)')
 rxCyrW = re.compile('(\\b|[кр])у(?=[аоэи])')
 
 rxCyrillic = re.compile('^[а-яёӟӥӧўөА-ЯЁӞӤӦЎӨ.,;:!?\\-()\\[\\]{}<>]*$')
+
+rxWords = re.compile("[\\wʼ´́̑̈'··̯̮̇-]+|[^\\wʼ´́̑̈'··̯̮̇-]+", flags=re.DOTALL)
 
 cyrReplacements = {}
 srcReplacements = {}
@@ -94,6 +98,49 @@ def beserman_translit_cyrillic(text):
     if res in cyrReplacements:
         res = cyrReplacements[res]
     return res
+
+
+def beserman_translit_cyr2dic_word(text):
+    text = rxCyrW.sub('\\1w', text)
+    text = text.replace('жи', 'жӥ')
+    text = text.replace('ши', 'шӥ')
+    text = text.replace('же', 'жэ')
+    text = text.replace('ше', 'шэ')
+    text = text.replace('Жи', 'Жӥ')
+    text = text.replace('Ши', 'Шӥ')
+    text = text.replace('Же', 'Жэ')
+    text = text.replace('Ше', 'Шэ')
+    letters = []
+    for letter in text:
+        try:
+            letters.append(cyr2dic[letter.lower()])
+        except KeyError:
+            letters.append(letter)
+    text = ''.join(letters)
+    text = rxCyrVJV.sub('\\1j\\2', text)
+    text = rxCyrJV.sub('j\\1', text)
+    text = text.replace('ъʼ', 'j')
+    text = text.replace('sʼ', 'šʼ')
+    text = text.replace('zʼ', 'žʼ')
+    text = rxCyrSoften.sub('\\1ʼ', text)
+    text = rxCyrNeutral.sub('', text)
+    text = rxCyrExtraSoft.sub('\\1ʼ\\1', text)
+    text = text.replace('sšʼ', 'šʼšʼ')
+    text = text.replace('zžʼ', 'žʼžʼ')
+    text = rxCyrMultSoften.sub('ʼ', text)
+    text = rxCyrVSoft.sub('\\1', text)
+    return text
+
+
+def beserman_input_cyrillic(field, text):
+    """
+    Prepare a string from one of the query fields for subsequent
+    processing
+    """
+    if field not in ('wf', 'lex', 'lex2', 'trans_ru', 'trans_ru2'):
+        return text
+    parts = rxWords.findall(text)
+    return ''.join(beserman_translit_cyr2dic_word(part) for part in parts)
 
 
 def beserman_translit_upa(text):
@@ -205,3 +252,5 @@ def beserman_translit_cyrillictranscr(text):
 if __name__ == '__main__':
     print(beserman_translit_cyrillictranscr('Čʼem dərja kənoje velʼtišʼkomə.'))
     print(beserman_translit_ipa('Čʼem dərja kənoje velʼtišʼkomə.'))
+    print(beserman_input_cyrillic('wf', 'Начальный татөн, а наконец пятый класэ отчө мөнөлӥзө, '
+                                  'и тӥнь соослэн продолжиться кариськиз удмурт, .'))
