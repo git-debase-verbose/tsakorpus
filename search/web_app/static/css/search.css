@@ -1392,7 +1392,7 @@ hr.separator {
 }
 
 .partial_annotation_icon {
-	color: #ee6060;
+	color: #dc94cd;
 	border-radius: 4px;
 	padding: 0px 4px;
 	text-decoration: none;
@@ -1400,7 +1400,7 @@ hr.separator {
 
 .partial_annotation_icon:hover {
 	color: white;
-	background-color: #ee6060;
+	background-color: #dc94cd;
 	text-decoration: none;
 }
 
