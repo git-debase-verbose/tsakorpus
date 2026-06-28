@@ -255,7 +255,7 @@ function toggle_interlinear() {
 	}
 	if ($('#viewing_mode option:selected').attr('value') == 'glossed')
 	{
-		$('span.word, span.word_in_table').each(function (index) {
+		$('span.word').each(function (index) {
 			if ($(this).find('.ana_interlinear').length > 0) {
 				return;
 			}
@@ -275,7 +275,7 @@ function toggle_interlinear() {
 		});
 	}
 	else {
-		$('span.word, span.word_in_table').each(function (index) {
+		$('span.word').each(function (index) {
 			$(this).css("display", "inline-block");
 			$(this).html($(this).html().replace(/<br>/, ''));
 		});

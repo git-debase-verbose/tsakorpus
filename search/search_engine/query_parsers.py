@@ -153,6 +153,19 @@ class InterfaceQueryParser:
             qEnd = ''
             text = text[:-1]
         parts = text.split('-')
+        if len(parts) <= 0:
+            return ''
+
+        # Check if we accidentally split something like PRS.[1-3]SG
+        partsClean = [parts[0]]
+        for iPart in range(len(parts) - 1):
+            try:
+                rxTmp = re.compile(partsClean[-1])
+                partsClean.append(parts[iPart + 1])
+            except:
+                partsClean[-1] += '-' + parts[iPart + 1]
+        parts = partsClean
+
         result = ''.join(self.make_gloss_query_part(part, lang)
                          for part in parts if len(part) > 0)
         return qStart + result + qEnd
