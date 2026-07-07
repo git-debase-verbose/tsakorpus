@@ -148,7 +148,7 @@ class Exmaralda_Hamburg2JSON(Txt2JSON):
         the event is used as the value.
         """
         for tierName in curWordAnno:
-            if tierName in ['tx', 'mb', 'mp', 'gr', 'ge', 'gg', 'ps', 'SpeakerContribution_Event']:
+            if tierName in ['tx', 'mb', 'mp', 'gr', 'ge', 'gg', 'ps', 'wge', 'wgr', 'wgg', 'SpeakerContribution_Event']:
                 continue
             elif len(curWordAnno[tierName]) > 0:
                 ana[tierName] = curWordAnno[tierName]
